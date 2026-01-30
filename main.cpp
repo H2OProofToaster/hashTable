@@ -4,6 +4,8 @@
 #include <limits>
 #include <fstream>
 #include <vector>
+#include <random>
+#include <chrono>
 
 using namespace std;
 
@@ -12,7 +14,7 @@ struct Student {
   string firstName;
   string lastName;
   int ID;
-  int GPA;
+  float GPA;
 };
 
 //Linked list node struct
@@ -25,10 +27,30 @@ struct Node {
 #include "hashTable.h"
 
 //Prototypes
-void generateStudents(int num, int nextID);
+vector<Student*> generateStudents(int num, int IDnum, vector<string> firstNames, vector<string> lastNames);
   
-int main () {  
+int main () {
 
+  //Generate name vectors
+  ifstream firstNames("firstNames");
+  ifstream lastNames("lastNames");
+  vector<string> firstNames;
+  vector<string> lastNames;
+  
+  if (firstNames.is_open() && lastNames.is_open()) {
+    string name;
+    
+    //Get first names
+    while (getline(firstNames, name)) {
+      firstNames.push_back(name);
+    }
+
+    //Get last names
+    while (getline(lastNames, name)) {
+      lastNames.push_back(name);
+    }
+  }
+  
   HashTable table = new HashTable();
   
   bool quit = false;
@@ -67,12 +89,29 @@ int main () {
   return 0;
 }
 
-void generateStudents(int num, int nextID, vector<string> firstNames, vector<string> lastNames) {
-  ifstream firstNames("firstNames");
-  ifstream lastNames("lastNames");
+vector<Student*> generateStudents (int num, int IDnum, vector<string> firstNames, vector<string> lastNames) {
 
-  if(firstNames.is_open() && lastNames.is_open()) {
-    vector<string> firstNames;
-    vector<string> lastNames;
+  //Seed random numbers
+  //Help from the google IA
+  mt19937 engine(chrono::system_clock::now().time_since_epoch().count());
+  
+  vector<Student*> students;
+  while (num != 0) {
+    Student* s = new Student;
 
-    //GetFirst
+    uniform_int_distribution<size_t> dist(0, firstNames.size() - 1);
+    s->firstName = firstNames[dist(engine)];
+
+    uniform_int_distribution<size_t> dist(0, lastNames.size() - 1);
+    s->lastName = lastNames[dist(engine)];
+
+    s->ID = IDnum;
+    IDnum ++;
+
+    uniform_real_distribution<float> dist(0.0f, 4.001f);
+    s->GPA = dist(engine);
+
+    students.push_back(s);
+  }
+  return students;
+}
