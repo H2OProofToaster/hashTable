@@ -7,53 +7,43 @@
 #include <random>
 #include <chrono>
 
-using namespace std;
-
-//Student struct
-struct Student {
-  string firstName;
-  string lastName;
-  int ID;
-  float GPA;
-};
-
-//Linked list node struct
-template <typename T>;
-struct Node {
-  T* s;
-  Node* n;
-};
-
 #include "hashTable.h"
 
+using namespace std;
+
 //Prototypes
-vector<Student*> generateStudents(int num, int IDnum, vector<string> firstNames, vector<string> lastNames);
-  
+vector<Student*> generateStudents(int num, int IDnum, const vector<string> &firstNames, const vector<string> &lastNames); //Hands off a vector of student pointers
+
 int main () {
 
   //Generate name vectors
-  ifstream firstNames("firstNames");
-  ifstream lastNames("lastNames");
-  vector<string> firstNames;
-  vector<string> lastNames;
-  
-  if (firstNames.is_open() && lastNames.is_open()) {
+  ifstream fN("firstNames");
+  ifstream lN("lastNames");
+
+  if (fN.is_open() && lN.is_open()) {
+    vector<string> firstNames;
+    vector<string> lastNames;
     string name;
     
     //Get first names
-    while (getline(firstNames, name)) {
+    while (getline(fN, name)) {
       firstNames.push_back(name);
     }
 
     //Get last names
-    while (getline(lastNames, name)) {
+    while (getline(lN, name)) {
       lastNames.push_back(name);
     }
   }
-  
-  HashTable table = new HashTable();
-  
+
+  //Hash Table
+  HashTable *table = new HashTable(23); //Make sure size is prime
+
+  //Running variable
   bool quit = false;
+
+  //ID counter
+  int currID = 0;
 
   while (!quit) {
 
@@ -61,21 +51,24 @@ int main () {
     string action;
     cin >> action;
 
-    if (action.compare("ADD") == 0) {
+    if (action == "ADD") {
 
       cout << "ADD" << endl; 
     }
-    else if (action.compare("DELETE") == 0) {
+    else if (action == "DELETE") {
 
       cout << "DELETE" << endl;
     }
-    else if (action.compare("PRINT") == 0) {
+    else if (action == "PRINT") {
 
       cout << "PRINT" << endl;
     }
-    else if (action.compare("QUIT") == 0) {
+    else if (action == "QUIT") {
 
-      cout << "QUIT" << endl;
+      //Clean up
+      delete table;
+
+      quit = true;
     }
     else {
 
@@ -89,29 +82,53 @@ int main () {
   return 0;
 }
 
-vector<Student*> generateStudents (int num, int IDnum, vector<string> firstNames, vector<string> lastNames) {
+vector<Student*> generateStudents(int num, int IDnum, const vector<string> &firstNames, const vector<string> &lastNames) {
 
   //Seed random numbers
-  //Help from the google IA
+  //Help from the Google AI
   mt19937 engine(chrono::system_clock::now().time_since_epoch().count());
   
   vector<Student*> students;
   while (num != 0) {
     Student* s = new Student;
 
-    uniform_int_distribution<size_t> dist(0, firstNames.size() - 1);
-    s->firstName = firstNames[dist(engine)];
+    uniform_int_distribution<size_t> distFirst(0, firstNames.size() - 1);
+    s->firstName = firstNames[distFirst(engine)];
 
-    uniform_int_distribution<size_t> dist(0, lastNames.size() - 1);
-    s->lastName = lastNames[dist(engine)];
+    uniform_int_distribution<size_t> distLast(0, lastNames.size() - 1);
+    s->lastName = lastNames[distLast(engine)];
 
-    s->ID = IDnum;
     IDnum ++;
+    s->ID = IDnum;
 
-    uniform_real_distribution<float> dist(0.0f, 4.001f);
-    s->GPA = dist(engine);
+    uniform_real_distribution<float> distGPA(0.0f, 4.001f);
+    s->GPA = distGPA(engine);
 
-    students.push_back(s);
+    students.push_back(s);\
+
+    num ++;
   }
   return students;
+}
+
+void addStudent(HashTable* t, Student* s = nullptr) {
+
+  //No student given
+  if (s == nullptr) {
+    s =  new Student;
+
+    cout << "What is the first name?";
+    cin >> s->firstName;
+
+    cout << "What is the last name?";
+    cin >> s->lastName;
+
+    cout << "What is the ID number?";
+    cin >> s->ID;
+
+    cout << "What is the GPA?";
+    cin >> s->GPA;
+  }
+
+  t->hash(s);
 }
