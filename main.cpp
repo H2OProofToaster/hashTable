@@ -13,6 +13,8 @@ using namespace std;
 
 //Prototypes
 vector<Student*> generateStudents(int num, int IDnum, const vector<string> &firstNames, const vector<string> &lastNames); //Hands off a vector of student pointers
+void addStudent(HashTable* t, Student* s = nullptr);
+void deleteStudent(HashTable* t, Student* s = nullptr);
 
 int main () {
 
@@ -53,11 +55,17 @@ int main () {
 
     if (action == "ADD") {
 
-      cout << "ADD" << endl; 
+      /* TODO: the tails don't fix themselves,
+       *       and they need to
+       *       the add function also does not use the tails
+       *       for some reason
+       */
+      cout << "Adding..." << endl;
+      addStudent(table);
     }
     else if (action == "DELETE") {
 
-      cout << "DELETE" << endl;
+      cout << "Deleting..." << endl;
     }
     else if (action == "PRINT") {
 
@@ -111,7 +119,7 @@ vector<Student*> generateStudents(int num, int IDnum, const vector<string> &firs
   return students;
 }
 
-void addStudent(HashTable* t, Student* s = nullptr) {
+void addStudent(HashTable* t, Student* s) {
 
   //No student given
   if (s == nullptr) {
@@ -130,5 +138,26 @@ void addStudent(HashTable* t, Student* s = nullptr) {
     cin >> s->GPA;
   }
 
-  t->hash(s);
+  t->insert(s);
+}
+
+void deleteStudent(HashTable* t, Student* s) {
+  if (s == nullptr) {
+    s = new Student;
+
+    cout << "What is the first name?";
+    cin >> s->firstName;
+
+    cout << "What is the last name?";
+    cin >> s->lastName;
+
+    cout << "What is the ID number?";
+    cin >> s->ID;
+
+    cout << "What is the GPA?";
+    cin >> s->GPA;
+  }
+
+  t->del(s);
+  delete s;
 }
