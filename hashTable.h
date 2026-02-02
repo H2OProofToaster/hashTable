@@ -10,7 +10,7 @@ class HashTable {
     Node<Student>* insert(Student* s, int hashNum, Node<Student>* curr, int collisionCount);
     Node<Student>* del(Student* s, int hashNum, Node<Student>* curr);
     Node<Student>** rehash(Node<Student>** old);
-
+  
 public:
     HashTable(int s);
     ~HashTable();
@@ -19,6 +19,7 @@ public:
     void insert(Student* s);
     //Maybe add a vector<Student*> overload
     void del(Student* s);
+    void print();
 };
 
 #endif

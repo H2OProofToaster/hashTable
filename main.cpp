@@ -7,14 +7,16 @@
 #include <random>
 #include <chrono>
 
+#include "structs.cpp"
 #include "hashTable.h"
 
 using namespace std;
 
 //Prototypes
-vector<Student*> generateStudents(int num, int IDnum, const vector<string> &firstNames, const vector<string> &lastNames); //Hands off a vector of student pointers
-void addStudent(HashTable* t, Student* s = nullptr);
+vector<Student*> generateStudents(int num, int &currID, const vector<string> &firstNames, const vector<string> &lastNames); //Hands off a vector of student pointers
+void addStudent(HashTable* t, int &currID, Student* s = nullptr);
 void deleteStudent(HashTable* t, Student* s = nullptr);
+void printStudents(HashTable* t);
 
 int main () {
 
@@ -39,7 +41,7 @@ int main () {
   }
 
   //Hash Table
-  HashTable *table = new HashTable(23); //Make sure size is prime
+  HashTable *table = new HashTable(100); //Make sure size is prime
 
   //Running variable
   bool quit = false;
@@ -55,27 +57,28 @@ int main () {
 
     if (action == "ADD") {
 
-      /* TODO: the tails don't fix themselves,
-       *       and they need to
-       *       the add function also does not use the tails
-       *       for some reason
-       */
       cout << "Adding..." << endl;
-      addStudent(table);
+      addStudent(table, currID);
+      cout << "Done" << endl;
     }
     else if (action == "DELETE") {
 
       cout << "Deleting..." << endl;
+      deleteStudent(table);
+      cout << "Done" << endl;
     }
     else if (action == "PRINT") {
 
-      cout << "PRINT" << endl;
+      cout << "Printing..." << endl;
+      printStudents(table);
+      cout << "Done" << endl;
     }
     else if (action == "QUIT") {
 
+      cout << "Quitting ..." << endl;
       //Clean up
       delete table;
-
+      cout << "Done" << endl;
       quit = true;
     }
     else {
@@ -90,7 +93,7 @@ int main () {
   return 0;
 }
 
-vector<Student*> generateStudents(int num, int IDnum, const vector<string> &firstNames, const vector<string> &lastNames) {
+vector<Student*> generateStudents(int num, int &currID, const vector<string> &firstNames, const vector<string> &lastNames) {
 
   //Seed random numbers
   //Help from the Google AI
@@ -106,8 +109,8 @@ vector<Student*> generateStudents(int num, int IDnum, const vector<string> &firs
     uniform_int_distribution<size_t> distLast(0, lastNames.size() - 1);
     s->lastName = lastNames[distLast(engine)];
 
-    IDnum ++;
-    s->ID = IDnum;
+    s->ID = currID;
+    currID ++;
 
     uniform_real_distribution<float> distGPA(0.0f, 4.001f);
     s->GPA = distGPA(engine);
@@ -119,7 +122,7 @@ vector<Student*> generateStudents(int num, int IDnum, const vector<string> &firs
   return students;
 }
 
-void addStudent(HashTable* t, Student* s) {
+void addStudent(HashTable* t, int &currID, Student* s) {
 
   //No student given
   if (s == nullptr) {
@@ -131,8 +134,8 @@ void addStudent(HashTable* t, Student* s) {
     cout << "What is the last name?";
     cin >> s->lastName;
 
-    cout << "What is the ID number?";
-    cin >> s->ID;
+    s->ID = currID;
+    currID ++;
 
     cout << "What is the GPA?";
     cin >> s->GPA;
@@ -160,4 +163,9 @@ void deleteStudent(HashTable* t, Student* s) {
 
   t->del(s);
   delete s;
+}
+
+void printStudents(HashTable* t) {
+
+  t->print();
 }

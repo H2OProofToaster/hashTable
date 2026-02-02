@@ -1,4 +1,9 @@
+#ifndef STRUCTS_CPP
+#define STRUCTS_CPP
+
 #include <string>
+#include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -11,22 +16,25 @@ struct Student {
 
     bool operator==(Student& other) {
 
-        return firstName == other.firstName && \
-               lastName == other.lastName && \
-               ID == other.ID && \
-               GPA == other.GPA;
+      return firstName == other.firstName && \
+             lastName == other.lastName && \
+             ID == other.ID && \
+             GPA == other.GPA;
     }
+
+    void print() { cout << firstName << endl << lastName << endl << ID << endl << fixed << setprecision(2) << GPA << endl; }
 };
 
 //Linked list node struct
 template <typename T>
 struct Node {
-    T* student;
+    T* student = nullptr;
     Node* next = nullptr;
-    Node* tail = this;
+    bool deleteData = true;
 
-    Node() : student(nullptr) {} //Default
     Node(T* s) : student(s) {}
 
-    ~Node() { delete student; }
+    ~Node() { if (deleteData) { delete student; } }
 };
+
+#endif
