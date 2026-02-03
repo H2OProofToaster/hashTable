@@ -47,7 +47,7 @@ int main () {
   bool quit = false;
 
   //ID counter
-  int currID = 0;
+  int currID = 1;
 
   while (!quit) {
 
@@ -75,7 +75,7 @@ int main () {
     }
     else if (action == "QUIT") {
 
-      cout << "Quitting ..." << endl;
+      cout << "Quitting..." << endl;
       //Clean up
       delete table;
       cout << "Done" << endl;
@@ -128,16 +128,16 @@ void addStudent(HashTable* t, int &currID, Student* s) {
   if (s == nullptr) {
     s =  new Student;
 
-    cout << "What is the first name?";
+    cout << "What is the first name? ";
     cin >> s->firstName;
 
-    cout << "What is the last name?";
+    cout << "What is the last name? ";
     cin >> s->lastName;
 
     s->ID = currID;
     currID ++;
 
-    cout << "What is the GPA?";
+    cout << "What is the GPA? ";
     cin >> s->GPA;
   }
 
@@ -148,16 +148,16 @@ void deleteStudent(HashTable* t, Student* s) {
   if (s == nullptr) {
     s = new Student;
 
-    cout << "What is the first name?";
+    cout << "What is the first name? ";
     cin >> s->firstName;
 
-    cout << "What is the last name?";
+    cout << "What is the last name? ";
     cin >> s->lastName;
 
-    cout << "What is the ID number?";
+    cout << "What is the ID number? ";
     cin >> s->ID;
 
-    cout << "What is the GPA?";
+    cout << "What is the GPA? ";
     cin >> s->GPA;
   }
 

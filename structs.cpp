@@ -13,7 +13,7 @@ struct Student {
     string lastName = "empty last name";
     int ID = -1;
     float GPA = -1.0f;
-
+  
     bool operator==(Student& other) {
 
       return firstName == other.firstName && \
@@ -32,6 +32,7 @@ struct Node {
     Node* next = nullptr;
     bool deleteData = true;
 
+    Node() {}
     Node(T* s) : student(s) {}
 
     ~Node() { if (deleteData) { delete student; } }

@@ -6,6 +6,11 @@ using namespace std;
 HashTable::HashTable(int s) {
 
   table = new Node<Student>*[s];
+  for(int i = 0; i < s; i++) {
+
+    table[i] = new Node<Student>();
+  }
+  
   size = s;
 }
 
@@ -140,13 +145,9 @@ void HashTable::print() {
 
   for (int i = 0; i < size; i++) {
 
-    Node<Student>* curr = table[i];
-    do {
-      
-      if (curr->student != nullptr) {
-	curr->student->print();
-	curr = curr->next;
-      }
-    } while (curr != nullptr);
+    if (table[i]->student != nullptr) {
+
+      table[i]->student->print();
+    }
   }
 }
