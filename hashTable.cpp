@@ -6,11 +6,7 @@ using namespace std;
 HashTable::HashTable(int s) {
 
   table = new Node<Student>*[s];
-  for(int i = 0; i < s; i++) {
-
-    table[i] = new Node<Student>();
-  }
-  
+  for(int i = 0; i < s; i++) { table[i] = nullptr; }
   size = s;
 }
 
@@ -43,78 +39,39 @@ int HashTable::hash(Student *s) {
   return hashNum;
 }
 
-//Public for manual insertion
 void HashTable::insert(Student* s) {
 
   int hashNum = hash(s);
-  Node<Student>* curr = *(this->table);
+  Node<Student>* curr = table[hashNum];
+  int collisions = 0;
+  
+  //Collision
+  while (curr != nullptr) { curr = curr->next; collisions ++; }
 
-  //First thing
-  if (curr->student == nullptr) { curr->student = s; }
+  //Make new node
+  curr = new Node<Student>(s);
 
-  //Empty next, create one
-  else if (curr->next == nullptr) { curr->next = new Node<Student>(s); }
-
-  //Recursive call
-  else { insert(s, hashNum, curr->next, 1); }
+  //Set table
+  table[hashNum] = curr;
+  
+  if (collisions > 3) { table = rehash(table); }
 }
 
-//Private, for recursion
-Node<Student>* HashTable::insert(Student* s, int hashNum, Node<Student>* curr, int collisionCount) {
-
-  //Too many collisions
-  if (collisionCount > 3) { table = rehash(table); }
-
-  //First thing
-  if (curr->student == nullptr) { curr->student = s; return curr; }
-  //Empty next, create one
-  else if (curr->next == nullptr) { curr->next = new Node<Student>(s); }
-  //Recursive call
-  else { return insert(s, hashNum, curr->next, collisionCount + 1); }
-
-  return nullptr;
-}
-
-//Public for manual deletion
 void HashTable::del(Student* s) {
 
   int hashNum = hash(s);
   Node<Student>* curr = table[hashNum];
 
-  //Head cases
+  //Nothing at index
+  if (curr = nullptr) { return; }
 
-  //Case: Entirely empty index
-  if (curr->student == nullptr && curr->next == nullptr) { cout << "Does not exist" << endl; }
+  while (curr->student != s) { curr = curr->next; }
 
-  //Case: The only node at this index matches
-  else if (curr->student == s && curr->next == nullptr) { delete curr->student; }
+  Node<Student>* temp = table[hashNum];
+  while (temp->next != curr) { temp = temp->next; }
+  temp->next = curr->next;
 
-  //Case: Head matches
-  else if (curr->student == s && curr->next != nullptr) { table[hashNum] = curr->next; delete curr; }
-
-  //Recursion
-  else {
-
-    Node<Student>* stitch = del(s, hashNum, curr->next);
-    if (stitch != nullptr) {
-
-      delete curr->next;
-      curr->next = stitch;
-    }
-  }
-}
-
-//Private for recursion
-Node<Student>* HashTable::del(Student* s, int hashNum, Node<Student>* curr) {
-
-  if (curr->student == s) { return curr->next; }
-
-  Node<Student>* stitch = del(s, hashNum, curr->next);
-  if(stitch != nullptr) {
-
-    delete curr->next;
-    curr->next = stitch;
-  }
+  delete curr;
 }
 
 //Private, automatically called with 3+ collisions
@@ -145,9 +102,6 @@ void HashTable::print() {
 
   for (int i = 0; i < size; i++) {
 
-    if (table[i]->student != nullptr) {
-
-      table[i]->student->print();
-    }
+    if (table[i]->student != nullptr) { table[i]->student->print(); }
   }
 }

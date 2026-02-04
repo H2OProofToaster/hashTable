@@ -11,8 +11,8 @@ using namespace std;
 struct Student {
     string firstName = "empty first name";
     string lastName = "empty last name";
-    int ID = -1;
-    float GPA = -1.0f;
+    int ID = NULL;
+    float GPA = NULL;
   
     bool operator==(Student& other) {
 
