@@ -50,11 +50,28 @@ void HashTable::insert(Student* s) {
 
   //Make new node
   curr = new Node<Student>(s);
-
+  cout << "Made node" << curr << endl;
+  
   //Set table
   table[hashNum] = curr;
+  cout << "Set node" << table[hashNum] << endl;
   
   if (collisions > 3) { table = rehash(table); }
+
+  /*
+    Node<Student>** currIndex = &table[1];
+  table[1] = new Node<Student>(new Student());
+  
+  //Empty index
+  if (*currIndex == nullptr) { table[1] = new Node<Student>(new Student()); }
+  
+  else {
+    Node<Student>* currNode = *currIndex;
+    
+    while (currNode->next != nullptr) {currNode = currNode->next; }
+    currNode->next = new Node<Student>(new Student);
+  }
+  */
 }
 
 void HashTable::del(Student* s) {
