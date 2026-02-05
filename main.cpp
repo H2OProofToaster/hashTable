@@ -41,7 +41,7 @@ int main () {
   }
 
   //Hash Table
-  HashTable *table = new HashTable(100); //Make sure size is prime
+  HashTable *table = new HashTable(23); //Make sure size is prime
 
   //Running variable
   bool quit = false;

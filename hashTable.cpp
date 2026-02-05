@@ -42,36 +42,19 @@ int HashTable::hash(Student *s) {
 void HashTable::insert(Student* s) {
 
   int hashNum = hash(s);
-  Node<Student>* curr = table[hashNum];
-  int collisions = 0;
+  int collisions = 1;
   
-  //Collision
-  while (curr != nullptr) { curr = curr->next; collisions ++; }
-
-  //Make new node
-  curr = new Node<Student>(s);
-  cout << "Made node" << curr << endl;
-  
-  //Set table
-  table[hashNum] = curr;
-  cout << "Set node" << table[hashNum] << endl;
-  
-  if (collisions > 3) { table = rehash(table); }
-
-  /*
-    Node<Student>** currIndex = &table[1];
-  table[1] = new Node<Student>(new Student());
+  Node<Student>** currIndex = &table[hashNum];
   
   //Empty index
-  if (*currIndex == nullptr) { table[1] = new Node<Student>(new Student()); }
+  if (*currIndex == nullptr) { table[hashNum] = new Node<Student>(s); }
   
   else {
     Node<Student>* currNode = *currIndex;
     
-    while (currNode->next != nullptr) {currNode = currNode->next; }
-    currNode->next = new Node<Student>(new Student);
+    while (currNode->next != nullptr) { currNode = currNode->next; collisions ++; }
+    currNode->next = new Node<Student>(s);
   }
-  */
 }
 
 void HashTable::del(Student* s) {
@@ -119,6 +102,18 @@ void HashTable::print() {
 
   for (int i = 0; i < size; i++) {
 
-    if (table[i]->student != nullptr) { table[i]->student->print(); }
+    Node<Student>** currIndex = &table[i];
+    
+    if (*currIndex != nullptr) {
+
+      Node<Student>* currNode = *currIndex;
+
+      do {
+
+	currNode->student->print();
+	cout << endl;
+	currNode = currNode->next;
+      } while (currNode != nullptr);
+    }
   }
 }
