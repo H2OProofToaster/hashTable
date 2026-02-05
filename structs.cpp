@@ -30,12 +30,9 @@ template <typename T>
 struct Node {
     T* student = nullptr;
     Node* next = nullptr;
-    bool deleteData = true;
 
     Node() {}
     Node(T* s) : student(s) {}
-
-    ~Node() { if (deleteData) { delete student; } }
 };
 
 #endif
