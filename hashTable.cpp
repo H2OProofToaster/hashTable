@@ -55,47 +55,78 @@ void HashTable::insert(Student* s) {
     while (currNode->next != nullptr) { currNode = currNode->next; collisions ++; }
     currNode->next = new Node<Student>(s);
   }
+
+  if (collisions > 3) {
+
+    cout << "Rehashing..." << endl;
+    while (rehash()) {}
+    cout << "Done" << endl;
+  }
 }
 
 void HashTable::del(Student* s) {
 
   int hashNum = hash(s);
-  Node<Student>* curr = table[hashNum];
+  
+  if (del(s, table[hashNum]) != nullptr) {
 
-  //Nothing at index
-  if (curr = nullptr) { return; }
+    Node<Student>* temp = table[hashNum]->next;
+    delete table[hashNum]->student;
+    delete table[hashNum];
+    table[hashNum] = temp;
+  }
+}
 
-  while (curr->student != s) { curr = curr->next; }
+Node<Student>* HashTable::del(Student* s, Node<Student>* curr) {
 
-  Node<Student>* temp = table[hashNum];
-  while (temp->next != curr) { temp = temp->next; }
-  temp->next = curr->next;
+  if (curr == nullptr) { return nullptr; }
 
-  delete curr;
+  else if (*(curr->student) == *s) {
+
+    //fix : end of list
+    return (curr->next != nullptr) ? curr->next : curr;
+  }
+
+  else {
+
+    Node<Student>* fix = del(s, curr->next);
+
+    //End of list
+    if (fix == curr->next) {
+
+      delete curr->next->student;
+      delete curr->next;
+      curr->next = nullptr;
+    }
+
+    else if (fix != nullptr) {
+
+      delete curr->next->student;
+      delete curr->next;
+      curr->next = fix;
+    }
+
+    else { return nullptr; }
+  }
 }
 
 //Private, automatically called with 3+ collisions
-Node<Student>** HashTable::rehash(Node<Student>** old) {
+bool HashTable::rehash(old) {
 
-  HashTable newTable(size * 2);
+  HashTable newTable = new HashTable(size * 2);
 
   for (int i = 0; i < size; i++) {
 
-    Node<Student>* curr = old[i];
-    do {
+    Node<Student>* curr = table[i];
 
-      if (curr->student != nullptr) {
-
-	newTable.insert(curr->student);
-	curr->deleteData = false; //Save student data
-	delete curr;
-	curr = curr->next;
-      }
-    } while (curr != nullptr);
+    if (curr != nullptr) {
+      
+      do { newTable->insert(curr->student); curr = curr->next; }
+      while (curr != nullptr);
+    }
   }
 
-  size = size * 2;
-  return newTable.table;
+  size *= 2;
 }
 
 void HashTable::print() {
