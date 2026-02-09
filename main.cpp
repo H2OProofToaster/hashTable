@@ -13,35 +13,42 @@
 using namespace std;
 
 //Prototypes
-vector<Student*> generateStudents(int num, int &currID, const vector<string> &firstNames, const vector<string> &lastNames); //Hands off a vector of student pointers
+vector<Student*> generateStudents(int &currID, const vector<string> &firstNames, const vector<string> &lastNames); //Hands off a vector of student pointers
 void addStudent(HashTable* t, int &currID, Student* s = nullptr);
 void deleteStudent(HashTable* t, Student* s = nullptr);
 void printStudents(HashTable* t);
 
 int main () {
 
+  cout << "Building..." << endl;
   //Generate name vectors
-  ifstream fN("firstNames");
-  ifstream lN("lastNames");
+  ifstream fN("firstNames.txt");
+  ifstream lN("lastNames.txt");
+  vector<string> firstNames;
+  vector<string> lastNames;
 
   if (fN.is_open() && lN.is_open()) {
-    vector<string> firstNames;
-    vector<string> lastNames;
+
     string name;
     
     //Get first names
     while (getline(fN, name)) {
+
       firstNames.push_back(name);
+      //cout << "Add " << name << " to first names" << endl;
     }
 
     //Get last names
     while (getline(lN, name)) {
+
       lastNames.push_back(name);
+      //cout << "Add " << name << " to last names" << endl;
     }
   }
+  cout << "Done" << endl;
 
   //Hash Table
-  HashTable *table = new HashTable(23); //Make sure size is prime
+  HashTable *table = new HashTable(100); //Make sure size is prime
 
   //Running variable
   bool quit = false;
@@ -51,7 +58,7 @@ int main () {
 
   while (!quit) {
 
-    cout << "What is your action? (ADD, DELETE, PRINT, QUIT)" << endl;
+    cout << "What is your action? (ADD, GENERATE, DELETE, PRINT, QUIT)" << endl;
     string action;
     cin >> action;
 
@@ -60,6 +67,11 @@ int main () {
       cout << "Adding..." << endl;
       addStudent(table, currID);
       cout << "Done" << endl;
+    }
+    else if (action == "GENERATE") {
+
+      cout << "Generating..." << endl;
+      table->insert(generateStudents(currID, firstNames, lastNames));
     }
     else if (action == "DELETE") {
 
@@ -93,8 +105,14 @@ int main () {
   return 0;
 }
 
-vector<Student*> generateStudents(int num, int &currID, const vector<string> &firstNames, const vector<string> &lastNames) {
+vector<Student*> generateStudents(int &currID, const vector<string> &firstNames, const vector<string> &lastNames) {
 
+  cout << "How many students? ";
+  int num;
+  cin >> num;
+
+  cout << "Building..." << endl;
+  
   //Seed random numbers
   //Help from the Google AI
   mt19937 engine(chrono::system_clock::now().time_since_epoch().count());
@@ -117,8 +135,9 @@ vector<Student*> generateStudents(int num, int &currID, const vector<string> &fi
 
     students.push_back(s);\
 
-    num ++;
+    num --;
   }
+  cout << "Done" << endl;
   return students;
 }
 

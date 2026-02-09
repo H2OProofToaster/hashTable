@@ -2,23 +2,28 @@
 #define HASHTABLE_H
 
 #include "structs.cpp"
+#include <vector>
 
 class HashTable {
     Node<Student>** table;
     int size;
-
-    //Check that you don't need to rehash,
-    //And fix to not do whatever this is
-    Node<Student>** rehash(Node<Student>** old);
+    bool reHash = false;
+  
+    bool rehash(Node<Student>** old);
+    Node<Student>* del(Student* s, Node<Student>* curr);
   
 public:
     HashTable(int s);
     ~HashTable();
 
+    void setTable(Node<Student>** t);
+    Node<Student>** getTable();
+  
     int hash(Student* s);
-    void insert(Student* s);
+    void insert(Student* s, bool bypass = false);
     void del(Student* s);
-    //Maybe add a vector<Student*> overload
+    void rehash();
+    void insert(vector<Student*> sVect);
     void print();
 };
 
