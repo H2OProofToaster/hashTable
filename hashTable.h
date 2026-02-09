@@ -7,7 +7,7 @@
 class HashTable {
     Node<Student>** table;
     int size;
-    bool reHash = false;
+  bool doRehash = false;
   
     bool rehash(Node<Student>** old);
     Node<Student>* del(Student* s, Node<Student>* curr);

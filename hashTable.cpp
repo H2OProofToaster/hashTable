@@ -63,14 +63,7 @@ void HashTable::insert(Student* s, bool bypass) {
     currNode->next = new Node<Student>(s);
   }
 
-  if (collisions > 3) { reHash = true; }
-  while (reHash && !bypass) {
-
-    cout << "Rehashing..." << endl;
-    this->rehash();
-  }
-
-  cout << "Done" << endl;
+  if (collisions > 3) { doRehash = true; }
 }
 
 void HashTable::del(Student* s) {
