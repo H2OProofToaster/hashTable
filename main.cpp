@@ -22,8 +22,8 @@ int main () {
 
   cout << "Building..." << endl;
   //Generate name vectors
-  ifstream fN("firstNames.txt");
-  ifstream lN("lastNames.txt");
+  ifstream fN("textfiles/firstNames.txt");
+  ifstream lN("textfiles/lastNames.txt");
   vector<string> firstNames;
   vector<string> lastNames;
 
