@@ -57,10 +57,11 @@ bool HashTable::insert(Student* s, bool inRehash) {
   if (table[hashNum] == nullptr) { table[hashNum] = new Node<Student>(s); }
   
   else {
+    Node<Student>* curr = table[hashNum];
     
-    while (table[hashNum]->next != nullptr) { table[hashNum] = table[hashNum]->next; collisions ++; }
+    while (curr->next != nullptr) { curr = curr->next; collisions ++; }
 
-    table[hashNum]->next = new Node<Student>(s);
+    curr->next = new Node<Student>(s);
   }
 
   //Collisions outside of rehash
@@ -69,9 +70,8 @@ bool HashTable::insert(Student* s, bool inRehash) {
     bool doRehash = false;
     do {
       
-      doRehash = false;
+      doRehash = rehash();
       cout << "Do rehash at size " << size << " with collisions " << collisions << endl;
-      rehash();
     } while (doRehash);
 
     return false;
