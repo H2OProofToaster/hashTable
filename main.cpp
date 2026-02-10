@@ -22,8 +22,8 @@ int main () {
 
   cout << "Building..." << endl;
   //Generate name vectors
-  ifstream fN("textfiles/firstNames.txt");
-  ifstream lN("textfiles/lastNames.txt");
+  ifstream fN("../textfiles/firstNames.txt");
+  ifstream lN("../textfiles/lastNames.txt");
   vector<string> firstNames;
   vector<string> lastNames;
 
@@ -72,6 +72,7 @@ int main () {
 
       cout << "Generating..." << endl;
       table->insert(generateStudents(currID, firstNames, lastNames));
+      table->checkRehash();
     }
     else if (action == "DELETE") {
 
@@ -119,7 +120,7 @@ vector<Student*> generateStudents(int &currID, const vector<string> &firstNames,
   
   vector<Student*> students;
   while (num != 0) {
-    Student* s = new Student;
+    Student* s = new Student();
 
     uniform_int_distribution<size_t> distFirst(0, firstNames.size() - 1);
     s->firstName = firstNames[distFirst(engine)];
