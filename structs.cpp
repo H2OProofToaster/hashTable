@@ -14,13 +14,7 @@ struct Student {
     int ID;
     float GPA;
   
-    bool operator==(Student& other) {
-
-      return firstName == other.firstName && \
-             lastName == other.lastName && \
-             ID == other.ID && \
-             GPA == other.GPA;
-    }
+  bool operator==(Student& other) { return ID == other.ID; }
 
     void print() { cout << firstName << endl << lastName << endl << ID << endl << fixed << setprecision(2) << GPA << endl; }
 };

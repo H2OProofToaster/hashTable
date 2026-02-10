@@ -39,7 +39,6 @@ int HashTable::hash(Student *s) {
   int hashNum = 0.0f;
   hashNum += (int)(s->firstName[0]);
   hashNum += (int)(s->lastName[0]);
-  hashNum += (int)(s->GPA);
   hashNum += s->ID;
   hashNum *= 67;
 
