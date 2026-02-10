@@ -22,8 +22,8 @@ int main () {
 
   cout << "Building..." << endl;
   //Generate name vectors
-  ifstream fN("../textfiles/firstNames.txt");
-  ifstream lN("../textfiles/lastNames.txt");
+  ifstream fN("firstNames.txt");
+  ifstream lN("lastNames.txt");
   vector<string> firstNames;
   vector<string> lastNames;
 
@@ -72,7 +72,6 @@ int main () {
 
       cout << "Generating..." << endl;
       table->insert(generateStudents(currID, firstNames, lastNames));
-      table->checkRehash();
     }
     else if (action == "DELETE") {
 

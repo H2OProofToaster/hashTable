@@ -7,7 +7,6 @@
 class HashTable {
     Node<Student>** table;
     int size;
-    bool doRehash = false;
     Node<Student>* del(Student* s, Node<Student>* curr);
   
 public:
@@ -16,15 +15,13 @@ public:
 
     void setTable(Node<Student>** t);
     Node<Student>** getTable();
-
-    bool getDoRehash();
   
     int hash(Student* s);
-    void insert(Student* s);
+    bool insert(Student* s, bool inRehash = false);
     void del(Student* s);
     void insert(vector<Student*> sVect);
     void print();
-    void checkRehash();
+    bool rehash();
 };
 
 #endif

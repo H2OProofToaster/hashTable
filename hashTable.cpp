@@ -40,13 +40,14 @@ int HashTable::hash(Student *s) {
   hashNum += (int)(s->firstName[0]);
   hashNum += (int)(s->lastName[0]);
   hashNum += (int)(s->GPA);
+  hashNum += s->ID;
   hashNum *= 67;
 
   hashNum %= size;
   return hashNum;
 }
 
-void HashTable::insert(Student* s) {
+bool HashTable::insert(Student* s, bool inRehash) {
 
   int hashNum = hash(s);
   int collisions = 1;
@@ -62,8 +63,22 @@ void HashTable::insert(Student* s) {
     currNode->next = new Node<Student>(s);
   }
 
+  if (collisions > 3 && !inRehash) {
 
-  if (collisions > 3) { doRehash = true; cout << "Do rehash at size " << size << " with collisions " << collisions << endl;}
+    bool doRehash = false;
+    do {
+      
+      doRehash = false;
+      cout << "Do rehash at size " << size << " with collisions " << collisions << endl;
+      rehash();
+    } while (doRehash);
+
+    return false;
+  }
+  
+  else if (collisions > 3 && inRehash) { return true; }
+
+  return false;
 }
 
 void HashTable::del(Student* s) {
@@ -113,43 +128,43 @@ Node<Student>* HashTable::del(Student* s, Node<Student>* curr) {
 }
 
 //Private, automatically called with 3+ collisions
-void HashTable::checkRehash() {
+bool HashTable::rehash() {
 
-  while (doRehash) {
+  cout << "Rehashing with size = " << size * 2 << "..." << endl;
 
-    doRehash = false;
+  HashTable* newTable = new HashTable(size * 2);
 
-    cout << "Rehashing with size = " << size << "..." << endl;
+  bool redoRehash = false;
+  
+  for (int i = 0; i < size; i++) {
 
-    HashTable* newTable = new HashTable(size * 2);
+    Node<Student>* curr = table[i];
+    if (curr != nullptr) {
 
-    for (int i = 0; i < size; i++) {
-
-      Node<Student>* curr = table[i];
-      if (curr != nullptr) {
-
-        do { newTable->insert(curr->student); curr = curr->next; }
-        while (curr != nullptr);
-      }
+      do {
+	  
+        redoRehash = newTable->insert(curr->student, true);
+	curr = curr->next;
+      } while (curr != nullptr);
     }
-
-    table = newTable->getTable();
-    newTable->setTable(nullptr);
-    doRehash = newTable->getDoRehash();
-    delete newTable;
-    size = size * 2;
-
-    cout << "Done" << endl;
   }
+
+  table = newTable->getTable();
+  newTable->setTable(nullptr);
+  delete newTable;
+  size = size * 2;
+
+  cout << "Done" << endl;
+
+  return redoRehash;
 }
 
 void HashTable::insert(vector<Student*> sVect) {
 
   cout << "Inserting..." << endl;
-  while (!sVect.empty()) {
+  for (int i = 0; i < sVect.size(); i++) {
 
-    insert(sVect.back());
-    sVect.pop_back();
+    insert(sVect[i]);
   }
   cout << "Done" << endl;
 }
@@ -173,5 +188,3 @@ void HashTable::print() {
     }
   }
 }
-
-bool HashTable::getDoRehash() { return doRehash; }
