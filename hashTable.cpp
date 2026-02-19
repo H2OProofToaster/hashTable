@@ -126,7 +126,7 @@ Node<Student>* HashTable::del(Student* s, Node<Student>* curr) {
       curr->next = fix;
     }
 
-    else { return nullptr; }
+    return nullptr;
   }
 }
 
